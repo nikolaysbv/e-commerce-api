@@ -6,10 +6,13 @@
 const express = require("express")
 const app = express()
 
-// modules
+// external packages
 require("dotenv").config()
 require("express-async-errors")
 const morgan = require("morgan")
+
+// internal packages
+const authRouter = require("./routes/authRoutes")
 
 // middleware
 const notFoundMiddleware = require("./middleware/not-found")
@@ -27,6 +30,9 @@ app.use(morgan("tiny"))
 
 // parsing json in req with content-type "application/json"
 app.use(express.json())
+
+// authentication
+app.use("/api/v1/auth", authRouter)
 
 /* ==============================
           Routes
