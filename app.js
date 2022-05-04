@@ -1,0 +1,62 @@
+/* ==============================
+          Dependencies
+============================== */
+
+//express
+const express = require("express")
+const app = express()
+
+// modules
+require("dotenv").config()
+require("express-async-errors")
+const morgan = require("morgan")
+
+// middleware
+const notFoundMiddleware = require("./middleware/not-found")
+const errorHandlerMiddleware = require("./middleware/error-handler")
+
+// database
+const connectDB = require("./db/connect")
+
+/* ==============================
+          Middleware
+============================== */
+
+// logging http requests
+app.use(morgan("tiny"))
+
+// parsing json in req with content-type "application/json"
+app.use(express.json())
+
+/* ==============================
+          Routes
+============================== */
+
+app.get("/", (req, res) => {
+  res.send("<h2>bc</h2>")
+})
+
+/* ==============================
+          Error handling
+============================== */
+
+app.use(notFoundMiddleware)
+app.use(errorHandlerMiddleware)
+
+/* ==============================
+          Starting server
+============================== */
+
+const port = process.env.PORT || 5000
+const start = async () => {
+  try {
+    await connectDB(process.env.MONGO_URI)
+    app.listen(port, () => {
+      console.log(`Server is listening on port ${port}...`)
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+start()
