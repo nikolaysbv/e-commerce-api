@@ -1,8 +1,8 @@
-const jwt = require("jsonwebtoken")
-const { StatusCodes } = require("http-status-codes")
+// const jwt = require("jsonwebtoken")
 const User = require("../models/User")
+const { StatusCodes } = require("http-status-codes")
 const CustomError = require("../errors")
-const { createJWT } = require("../utils")
+const { attachCookiesToResponse } = require("../utils")
 
 const register = async (req, res) => {
   const { email, name, password } = req.body
@@ -16,11 +16,13 @@ const register = async (req, res) => {
   // create user in the users document
   const user = await User.create({ name, email, password })
 
-  // create a jwt for the user
+  // create user's payload for JWT
   const tokenUser = { name: user.name, userId: user._id, role: user.role }
-  const token = createJWT({ payload: tokenUser })
 
-  res.status(StatusCodes.CREATED).json({ user: tokenUser, token })
+  // attach cookie with token to res
+  attachCookiesToResponse({ res, user: tokenUser })
+
+  res.status(StatusCodes.CREATED).json({ user: tokenUser })
 }
 
 const login = async (req, res) => {

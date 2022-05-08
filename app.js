@@ -10,6 +10,7 @@ const app = express()
 require("dotenv").config()
 require("express-async-errors")
 const morgan = require("morgan")
+const cookieParser = require("cookie-parser")
 
 // internal packages
 const authRouter = require("./routes/authRoutes")
@@ -31,6 +32,9 @@ app.use(morgan("tiny"))
 // parsing json in req with content-type "application/json"
 app.use(express.json())
 
+// parsing cookies in req
+app.use(cookieParser(process.env.JWT_SECRET))
+
 // authentication
 app.use("/api/v1/auth", authRouter)
 
@@ -39,6 +43,8 @@ app.use("/api/v1/auth", authRouter)
 ============================== */
 
 app.get("/", (req, res) => {
+  console.log(req.signedCookies)
+  // console.log(req.cookies)
   res.send("<h2>bc</h2>")
 })
 
