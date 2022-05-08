@@ -14,6 +14,7 @@ const cookieParser = require("cookie-parser")
 
 // internal packages
 const authRouter = require("./routes/authRoutes")
+const userRouter = require("./routes/userRoutes")
 
 // middleware
 const notFoundMiddleware = require("./middleware/not-found")
@@ -38,13 +39,14 @@ app.use(cookieParser(process.env.JWT_SECRET))
 // authentication
 app.use("/api/v1/auth", authRouter)
 
+// users
+app.use("/api/v1/users", userRouter)
+
 /* ==============================
           Routes
 ============================== */
 
 app.get("/", (req, res) => {
-  console.log(req.signedCookies)
-  // console.log(req.cookies)
   res.send("<h2>bc</h2>")
 })
 
