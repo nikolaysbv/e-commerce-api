@@ -36,15 +36,15 @@ app.use(express.json())
 // parsing cookies in req
 app.use(cookieParser(process.env.JWT_SECRET))
 
+/* ==============================
+          Routes
+============================== */
+
 // authentication
 app.use("/api/v1/auth", authRouter)
 
 // users
 app.use("/api/v1/users", userRouter)
-
-/* ==============================
-          Routes
-============================== */
 
 app.get("/", (req, res) => {
   res.send("<h2>bc</h2>")
