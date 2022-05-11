@@ -4,7 +4,6 @@ const {
   authenticateUser,
   authorizePermissions,
 } = require("../middleware/authentication")
-
 const {
   getAllUsers,
   getSingleUser,

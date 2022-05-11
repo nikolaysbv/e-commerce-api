@@ -11,10 +11,13 @@ require("dotenv").config()
 require("express-async-errors")
 const morgan = require("morgan")
 const cookieParser = require("cookie-parser")
+const fileUpload = require("express-fileupload")
 
 // internal packages
 const authRouter = require("./routes/authRoutes")
 const userRouter = require("./routes/userRoutes")
+const productRouter = require("./routes/productRoutes")
+const reviewRouter = require("./routes/reviewRoutes")
 
 // middleware
 const notFoundMiddleware = require("./middleware/not-found")
@@ -36,6 +39,12 @@ app.use(express.json())
 // parsing cookies in req
 app.use(cookieParser(process.env.JWT_SECRET))
 
+// set up public folder as static
+app.use(express.static("./public"))
+
+// use the express-fileupload middleware
+app.use(fileUpload())
+
 /* ==============================
           Routes
 ============================== */
@@ -45,6 +54,12 @@ app.use("/api/v1/auth", authRouter)
 
 // users
 app.use("/api/v1/users", userRouter)
+
+// products
+app.use("/api/v1/products", productRouter)
+
+// reviews
+app.use("/api/v1/reviews", reviewRouter)
 
 app.get("/", (req, res) => {
   res.send("<h2>bc</h2>")
