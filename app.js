@@ -18,6 +18,7 @@ const authRouter = require("./routes/authRoutes")
 const userRouter = require("./routes/userRoutes")
 const productRouter = require("./routes/productRoutes")
 const reviewRouter = require("./routes/reviewRoutes")
+const orderRouter = require("./routes/orderRoutes")
 
 // middleware
 const notFoundMiddleware = require("./middleware/not-found")
@@ -60,6 +61,9 @@ app.use("/api/v1/products", productRouter)
 
 // reviews
 app.use("/api/v1/reviews", reviewRouter)
+
+// orders
+app.use("/api/v1/orders", orderRouter)
 
 app.get("/", (req, res) => {
   res.send("<h2>bc</h2>")
