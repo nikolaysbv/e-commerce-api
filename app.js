@@ -36,15 +36,16 @@ const connectDB = require("./db/connect")
           Middleware
 ============================== */
 
+// needed for rate limiter to work on Heroku
 app.set("trust proxy", 1)
 
+// security packages
 app.use(
   rateLimiter({
     windowsMs: 15 * 60 * 1000,
     max: 60,
   })
 )
-
 app.use(helmet())
 app.use(cors())
 app.use(xss())
