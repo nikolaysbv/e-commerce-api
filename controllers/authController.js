@@ -3,6 +3,7 @@ const User = require("../models/User")
 const { StatusCodes } = require("http-status-codes")
 const CustomError = require("../errors")
 const { attachCookiesToResponse, createTokenUser } = require("../utils")
+const crypto = require("crypto")
 
 const register = async (req, res) => {
   const { email, name, password } = req.body
@@ -13,17 +14,22 @@ const register = async (req, res) => {
     throw new CustomError.BadRequestError("Email already exists")
   }
 
+  // create unique verification token for user
+  const verificationToken = crypto.randomBytes(40).toString("hex")
+
   // create user in the users document
-  const user = await User.create({ name, email, password })
+  const user = await User.create({
+    name,
+    email,
+    password,
+    verificationToken,
+  })
 
-  // create token user
-  const tokenUser = createTokenUser(user)
-
-  // attach cookie with token to res
-  attachCookiesToResponse({ res, user: tokenUser })
-
-  // return user
-  res.status(StatusCodes.CREATED).json({ user: tokenUser })
+  // send verification token back only while testing in postman
+  res.status(StatusCodes.CREATED).json({
+    msg: "Success! Please check your email to verify account",
+    verificationToken: user.verificationToken,
+  })
 }
 
 const login = async (req, res) => {
@@ -46,6 +52,11 @@ const login = async (req, res) => {
   const isPasswordCorrect = await user.comparePassword(password)
   if (!isPasswordCorrect) {
     throw new CustomError.UnauthenticatedError("Invalid Credentials")
+  }
+
+  // check if user has verified email
+  if (!user.isVerified) {
+    throw new CustomError.UnauthenticatedError("Please verify your email")
   }
 
   // create token user
