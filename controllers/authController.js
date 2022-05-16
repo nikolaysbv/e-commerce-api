@@ -77,8 +77,34 @@ const logout = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "user logged out!" })
 }
 
+const verifyEmail = async (req, res) => {
+  const { verificationToken, email } = req.body
+
+  // find the user who uses this email
+  const user = await User.findOne({ email })
+
+  // check if user exists
+  if (!user) {
+    throw new CustomError.UnauthenticatedError("Verification Failed")
+  }
+
+  // check if vtoken in mongo is the same as the one passed
+  if (user.verificationToken !== verificationToken) {
+    throw new CustomError.UnauthenticatedError("Verification Failed")
+  }
+
+  user.isVerified = true
+  user.verified = Date.now()
+  user.verificationToken = ""
+
+  await user.save()
+
+  res.status(StatusCodes.OK).json({ msg: "Email Verified" })
+}
+
 module.exports = {
   register,
   login,
   logout,
+  verifyEmail,
 }
