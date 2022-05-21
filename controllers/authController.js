@@ -205,7 +205,7 @@ const resetPassword = async (req, res) => {
     }
   }
 
-  res.send("reset password")
+  res.send("Password successfully reset!")
 }
 
 module.exports = {
