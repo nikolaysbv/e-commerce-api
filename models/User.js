@@ -38,6 +38,12 @@ const UserSchema = new mongoose.Schema({
   verified: {
     type: Date,
   },
+  passwordToken: {
+    type: String,
+  },
+  passwordTokenExpirationDate: {
+    type: Date,
+  },
 })
 
 // before saving the User instance, hash its password
